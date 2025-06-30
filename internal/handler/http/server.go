@@ -28,7 +28,7 @@ func (s *server) Start(ctx context.Context) error {
 	if err := goload.RegisterGoLoadServiceHandlerFromEndpoint(
 		ctx,
 		mux,
-		"/api",
+		"0.0.0.0:8083",
 		[]grpc.DialOption{
 			grpc.WithTransportCredentials(insecure.NewCredentials()),
 		}); err != nil {

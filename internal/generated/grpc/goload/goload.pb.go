@@ -8,6 +8,7 @@ package goload
 
 import (
 	_ "github.com/envoyproxy/protoc-gen-validate/validate"
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -123,28 +124,28 @@ func (DownloadStatus) EnumDescriptor() ([]byte, []int) {
 	return file_goload_proto_rawDescGZIP(), []int{1}
 }
 
-type User struct {
+type Account struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            uint64                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Username      string                 `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty"`
+	AccountName   string                 `protobuf:"bytes,2,opt,name=account_name,json=accountName,proto3" json:"account_name,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *User) Reset() {
-	*x = User{}
+func (x *Account) Reset() {
+	*x = Account{}
 	mi := &file_goload_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *User) String() string {
+func (x *Account) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*User) ProtoMessage() {}
+func (*Account) ProtoMessage() {}
 
-func (x *User) ProtoReflect() protoreflect.Message {
+func (x *Account) ProtoReflect() protoreflect.Message {
 	mi := &file_goload_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -156,21 +157,21 @@ func (x *User) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use User.ProtoReflect.Descriptor instead.
-func (*User) Descriptor() ([]byte, []int) {
+// Deprecated: Use Account.ProtoReflect.Descriptor instead.
+func (*Account) Descriptor() ([]byte, []int) {
 	return file_goload_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *User) GetId() uint64 {
+func (x *Account) GetId() uint64 {
 	if x != nil {
 		return x.Id
 	}
 	return 0
 }
 
-func (x *User) GetUsername() string {
+func (x *Account) GetAccountName() string {
 	if x != nil {
-		return x.Username
+		return x.AccountName
 	}
 	return ""
 }
@@ -178,7 +179,7 @@ func (x *User) GetUsername() string {
 type DownloadTask struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	Id             uint64                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	OfUser         *User                  `protobuf:"bytes,2,opt,name=of_user,json=ofUser,proto3" json:"of_user,omitempty"`
+	OfAccount      *Account               `protobuf:"bytes,2,opt,name=of_account,json=ofAccount,proto3" json:"of_account,omitempty"`
 	DownloadType   DownloadType           `protobuf:"varint,3,opt,name=download_type,json=downloadType,proto3,enum=goload.DownloadType" json:"download_type,omitempty"`
 	Url            string                 `protobuf:"bytes,4,opt,name=url,proto3" json:"url,omitempty"`
 	DownloadStatus DownloadStatus         `protobuf:"varint,5,opt,name=download_status,json=downloadStatus,proto3,enum=goload.DownloadStatus" json:"download_status,omitempty"`
@@ -223,9 +224,9 @@ func (x *DownloadTask) GetId() uint64 {
 	return 0
 }
 
-func (x *DownloadTask) GetOfUser() *User {
+func (x *DownloadTask) GetOfAccount() *Account {
 	if x != nil {
-		return x.OfUser
+		return x.OfAccount
 	}
 	return nil
 }
@@ -253,7 +254,7 @@ func (x *DownloadTask) GetDownloadStatus() DownloadStatus {
 
 type CreateAccountRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Username      string                 `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
+	AccountName   string                 `protobuf:"bytes,1,opt,name=account_name,json=accountName,proto3" json:"account_name,omitempty"`
 	Password      string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -289,9 +290,9 @@ func (*CreateAccountRequest) Descriptor() ([]byte, []int) {
 	return file_goload_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *CreateAccountRequest) GetUsername() string {
+func (x *CreateAccountRequest) GetAccountName() string {
 	if x != nil {
-		return x.Username
+		return x.AccountName
 	}
 	return ""
 }
@@ -305,7 +306,7 @@ func (x *CreateAccountRequest) GetPassword() string {
 
 type CreateAccountResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        uint64                 `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	AccountId     uint64                 `protobuf:"varint,1,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -340,16 +341,16 @@ func (*CreateAccountResponse) Descriptor() ([]byte, []int) {
 	return file_goload_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *CreateAccountResponse) GetUserId() uint64 {
+func (x *CreateAccountResponse) GetAccountId() uint64 {
 	if x != nil {
-		return x.UserId
+		return x.AccountId
 	}
 	return 0
 }
 
 type CreateSessionRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Username      string                 `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
+	AccountName   string                 `protobuf:"bytes,1,opt,name=account_name,json=accountName,proto3" json:"account_name,omitempty"`
 	Password      string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -385,9 +386,9 @@ func (*CreateSessionRequest) Descriptor() ([]byte, []int) {
 	return file_goload_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *CreateSessionRequest) GetUsername() string {
+func (x *CreateSessionRequest) GetAccountName() string {
 	if x != nil {
-		return x.Username
+		return x.AccountName
 	}
 	return ""
 }
@@ -959,23 +960,25 @@ var File_goload_proto protoreflect.FileDescriptor
 
 const file_goload_proto_rawDesc = "" +
 	"\n" +
-	"\fgoload.proto\x12\x06goload\x1a\x17validate/validate.proto\"2\n" +
-	"\x04User\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x04R\x02id\x12\x1a\n" +
-	"\busername\x18\x02 \x01(\tR\busername\"\xd3\x01\n" +
+	"\fgoload.proto\x12\x06goload\x1a\x17validate/validate.proto\x1a\x1cgoogle/api/annotations.proto\"<\n" +
+	"\aAccount\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x04R\x02id\x12!\n" +
+	"\faccount_name\x18\x02 \x01(\tR\vaccountName\"\xdc\x01\n" +
 	"\fDownloadTask\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x04R\x02id\x12%\n" +
-	"\aof_user\x18\x02 \x01(\v2\f.goload.UserR\x06ofUser\x129\n" +
+	"\x02id\x18\x01 \x01(\x04R\x02id\x12.\n" +
+	"\n" +
+	"of_account\x18\x02 \x01(\v2\x0f.goload.AccountR\tofAccount\x129\n" +
 	"\rdownload_type\x18\x03 \x01(\x0e2\x14.goload.DownloadTypeR\fdownloadType\x12\x10\n" +
 	"\x03url\x18\x04 \x01(\tR\x03url\x12?\n" +
-	"\x0fdownload_status\x18\x05 \x01(\x0e2\x16.goload.DownloadStatusR\x0edownloadStatus\"\x86\x01\n" +
-	"\x14CreateAccountRequest\x126\n" +
-	"\busername\x18\x01 \x01(\tB\x1a\xfaB\x17r\x152\x13^[a-zA-Z0-9]{6,32}$R\busername\x126\n" +
-	"\bpassword\x18\x02 \x01(\tB\x1a\xfaB\x17r\x152\x13^[a-zA-Z0-9]{6,32}$R\bpassword\"0\n" +
-	"\x15CreateAccountResponse\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\x04R\x06userId\"\x86\x01\n" +
-	"\x14CreateSessionRequest\x126\n" +
-	"\busername\x18\x01 \x01(\tB\x1a\xfaB\x17r\x152\x13^[a-zA-Z0-9]{6,32}$R\busername\x126\n" +
+	"\x0fdownload_status\x18\x05 \x01(\x0e2\x16.goload.DownloadStatusR\x0edownloadStatus\"\x8d\x01\n" +
+	"\x14CreateAccountRequest\x12=\n" +
+	"\faccount_name\x18\x01 \x01(\tB\x1a\xfaB\x17r\x152\x13^[a-zA-Z0-9]{6,32}$R\vaccountName\x126\n" +
+	"\bpassword\x18\x02 \x01(\tB\x1a\xfaB\x17r\x152\x13^[a-zA-Z0-9]{6,32}$R\bpassword\"6\n" +
+	"\x15CreateAccountResponse\x12\x1d\n" +
+	"\n" +
+	"account_id\x18\x01 \x01(\x04R\taccountId\"\x8d\x01\n" +
+	"\x14CreateSessionRequest\x12=\n" +
+	"\faccount_name\x18\x01 \x01(\tB\x1a\xfaB\x17r\x152\x13^[a-zA-Z0-9]{6,32}$R\vaccountName\x126\n" +
 	"\bpassword\x18\x02 \x01(\tB\x1a\xfaB\x17r\x152\x13^[a-zA-Z0-9]{6,32}$R\bpassword\"-\n" +
 	"\x15CreateSessionResponse\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\"\x88\x01\n" +
@@ -1017,9 +1020,9 @@ const file_goload_proto_rawDesc = "" +
 	"\vDownloading\x10\x02\x12\n" +
 	"\n" +
 	"\x06Failed\x10\x03\x12\v\n" +
-	"\aSuccess\x10\x042\x92\x05\n" +
-	"\rGoLoadService\x12N\n" +
-	"\rCreateAccount\x12\x1c.goload.CreateAccountRequest\x1a\x1d.goload.CreateAccountResponse\"\x00\x12N\n" +
+	"\aSuccess\x10\x042\xa8\x05\n" +
+	"\rGoLoadService\x12d\n" +
+	"\rCreateAccount\x12\x1c.goload.CreateAccountRequest\x1a\x1d.goload.CreateAccountResponse\"\x16\x82\xd3\xe4\x93\x02\x10:\x01*\"\v/v1/account\x12N\n" +
 	"\rCreateSession\x12\x1c.goload.CreateSessionRequest\x1a\x1d.goload.CreateSessionResponse\"\x00\x12]\n" +
 	"\x12CreateDownloadTask\x12!.goload.CreateDownloadTaskRequest\x1a\".goload.CreateDownloadTaskResponse\"\x00\x12`\n" +
 	"\x13GetDownloadTaskList\x12\".goload.GetDownloadTaskListRequest\x1a#.goload.GetDownloadTaskListResponse\"\x00\x12]\n" +
@@ -1044,7 +1047,7 @@ var file_goload_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
 var file_goload_proto_goTypes = []any{
 	(DownloadType)(0),                   // 0: goload.DownloadType
 	(DownloadStatus)(0),                 // 1: goload.DownloadStatus
-	(*User)(nil),                        // 2: goload.User
+	(*Account)(nil),                     // 2: goload.Account
 	(*DownloadTask)(nil),                // 3: goload.DownloadTask
 	(*CreateAccountRequest)(nil),        // 4: goload.CreateAccountRequest
 	(*CreateAccountResponse)(nil),       // 5: goload.CreateAccountResponse
@@ -1062,7 +1065,7 @@ var file_goload_proto_goTypes = []any{
 	(*GetDownloadTaskFileResponse)(nil), // 17: goload.GetDownloadTaskFileResponse
 }
 var file_goload_proto_depIdxs = []int32{
-	2,  // 0: goload.DownloadTask.of_user:type_name -> goload.User
+	2,  // 0: goload.DownloadTask.of_account:type_name -> goload.Account
 	0,  // 1: goload.DownloadTask.download_type:type_name -> goload.DownloadType
 	1,  // 2: goload.DownloadTask.download_status:type_name -> goload.DownloadStatus
 	0,  // 3: goload.CreateDownloadTaskRequest.download_type:type_name -> goload.DownloadType

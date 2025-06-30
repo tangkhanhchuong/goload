@@ -4,12 +4,12 @@ SWAGGER_DIR := api
 
 .PHONY: all generate clean vendor run_dev
 
-run_dev:
-	go run cmd/main.go server
-
 generate:
 	buf generate api
-	
+	wire internal/wiring/wire.go
+
+run_dev: generate
+	go run cmd/main.go server
 
 clean:
 	rm -rf $(OUT_DIR)/*

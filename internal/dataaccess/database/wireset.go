@@ -8,4 +8,6 @@ var WireSet = wire.NewSet(
 	InitializeDB,
 	InitializeGoquDB,
 	NewMigrator,
+	NewAccountRepository,
+	NewAccountPasswordRepository,
 )

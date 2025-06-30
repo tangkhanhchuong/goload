@@ -18,7 +18,7 @@ import (
 var WireSet = wire.NewSet(
 	app.WireSet,
 	configs.WireSet,
-	// dataaccess.WireSet,
+	dataaccess.WireSet,
 	logic.WireSet,
 	handler.WireSet,
 	utils.WireSet,

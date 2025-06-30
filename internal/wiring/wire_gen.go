@@ -37,8 +37,14 @@ func InitializeServer(configFilePath configs.ConfigFilePath) (*app.Server, func(
 		cleanup()
 		return nil, nil, err
 	}
-	migrator := database.NewMigrator(db, logger, "postgres")
-	goLoadServiceServer := grpc.NewHandler()
+	migrator := database.NewMigrator(db, logger)
+	goquDatabase := database.InitializeGoquDB(db)
+	accountRepository := database.NewAccountRepository(goquDatabase)
+	accountPasswordRepository := database.NewAccountPasswordRepository(goquDatabase)
+	auth := config.Auth
+	hashService := logic.NewHashService(auth)
+	accountService := logic.NewAccountService(goquDatabase, accountRepository, accountPasswordRepository, hashService)
+	goLoadServiceServer := grpc.NewHandler(accountService)
 	server := grpc.NewServer(goLoadServiceServer)
 	httpServer := http.NewServer()
 	appServer := app.NewServer(migrator, server, httpServer, logger)

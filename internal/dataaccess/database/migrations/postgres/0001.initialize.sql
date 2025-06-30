@@ -1,7 +1,7 @@
 -- +migrate Up
 CREATE TABLE IF NOT EXISTS accounts (
-    id BIGINT PRIMARY KEY,
-    account_name VARCHAR(256) NOT NULL
+    id BIGSERIAL PRIMARY KEY,
+    account_name VARCHAR(256) UNIQUE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS account_passwords (
@@ -11,12 +11,12 @@ CREATE TABLE IF NOT EXISTS account_passwords (
 );
 
 CREATE TABLE IF NOT EXISTS token_public_keys (
-    id BIGINT PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     public_key BYTEA NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS download_tasks (
-    task_id BIGINT PRIMARY KEY,
+    task_id BIGSERIAL PRIMARY KEY,
     of_account_id BIGINT,
     download_type SMALLINT NOT NULL,
     url TEXT NOT NULL,

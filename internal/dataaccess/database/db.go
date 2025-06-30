@@ -7,10 +7,9 @@ import (
 	"log"
 
 	"github.com/doug-martin/goqu/v9"
+	_ "github.com/lib/pq"
 
 	"goload/internal/configs"
-
-	_ "github.com/lib/pq"
 )
 
 type Database interface {

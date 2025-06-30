@@ -16,8 +16,8 @@ type Config struct {
 	HTTP     HTTP     `yaml:"http"`
 	Log      Log      `yaml:"log"`
 	Database Database `yaml:"database"`
-	// Auth     Auth     `yaml:"auth"`
-	// Cache    Cache    `yaml:"cache"`
+	Auth     Auth     `yaml:"auth"`
+	Cache    Cache    `yaml:"cache"`
 }
 
 func NewConfig(filePath ConfigFilePath) (Config, error) {

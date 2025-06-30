@@ -16,38 +16,6 @@
     "application/json"
   ],
   "paths": {
-    "/goload.GoLoadService/CreateAccount": {
-      "post": {
-        "operationId": "GoLoadService_CreateAccount",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/goloadCreateAccountResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/goloadCreateAccountRequest"
-            }
-          }
-        ],
-        "tags": [
-          "GoLoadService"
-        ]
-      }
-    },
     "/goload.GoLoadService/CreateDownloadTask": {
       "post": {
         "operationId": "GoLoadService_CreateDownloadTask",
@@ -248,13 +216,57 @@
           "GoLoadService"
         ]
       }
+    },
+    "/v1/account": {
+      "post": {
+        "operationId": "GoLoadService_CreateAccount",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/goloadCreateAccountResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/goloadCreateAccountRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GoLoadService"
+        ]
+      }
     }
   },
   "definitions": {
+    "goloadAccount": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "accountName": {
+          "type": "string"
+        }
+      }
+    },
     "goloadCreateAccountRequest": {
       "type": "object",
       "properties": {
-        "username": {
+        "accountName": {
           "type": "string"
         },
         "password": {
@@ -265,7 +277,7 @@
     "goloadCreateAccountResponse": {
       "type": "object",
       "properties": {
-        "userId": {
+        "accountId": {
           "type": "string",
           "format": "uint64"
         }
@@ -296,7 +308,7 @@
     "goloadCreateSessionRequest": {
       "type": "object",
       "properties": {
-        "username": {
+        "accountName": {
           "type": "string"
         },
         "password": {
@@ -351,8 +363,8 @@
           "type": "string",
           "format": "uint64"
         },
-        "ofUser": {
-          "$ref": "#/definitions/goloadUser"
+        "ofAccount": {
+          "$ref": "#/definitions/goloadAccount"
         },
         "downloadType": {
           "$ref": "#/definitions/goloadDownloadType"
@@ -447,18 +459,6 @@
         "downloadTaskId": {
           "type": "string",
           "format": "uint64"
-        }
-      }
-    },
-    "goloadUser": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "format": "uint64"
-        },
-        "username": {
-          "type": "string"
         }
       }
     },

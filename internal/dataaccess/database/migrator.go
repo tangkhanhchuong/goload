@@ -22,20 +22,17 @@ type Migrator interface {
 }
 
 type migrator struct {
-	db      *sql.DB
-	logger  *zap.Logger
-	dialect string
+	db     *sql.DB
+	logger *zap.Logger
 }
 
 func NewMigrator(
 	db *sql.DB,
 	logger *zap.Logger,
-	dialect string,
 ) Migrator {
 	return &migrator{
-		db:      db,
-		logger:  logger,
-		dialect: dialect,
+		db:     db,
+		logger: logger,
 	}
 }
 
