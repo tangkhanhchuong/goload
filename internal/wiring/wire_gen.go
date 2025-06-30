@@ -11,7 +11,7 @@ import (
 	"goload/internal/app"
 	"goload/internal/configs"
 	"goload/internal/dataaccess"
-	// "goload/internal/dataaccess/database"
+	"goload/internal/dataaccess/database"
 	"goload/internal/handler"
 	"goload/internal/handler/grpc"
 	"goload/internal/handler/http"
@@ -26,26 +26,25 @@ func InitializeServer(configFilePath configs.ConfigFilePath) (*app.Server, func(
 	if err != nil {
 		return nil, nil, err
 	}
-	// configsDatabase := config.Database
-	// db, cleanup, err := database.InitializeDB(configsDatabase)
-	// if err != nil {
-	// 	return nil, nil, err
-	// }
+	configsDatabase := config.Database
+	db, cleanup, err := database.InitializeDB(configsDatabase)
+	if err != nil {
+		return nil, nil, err
+	}
 	log := config.Log
 	logger, cleanup2, err := utils.InitializeLogger(log)
-	// if err != nil {
-	// 	cleanup()
-	// 	return nil, nil, err
-	// }
-	// migrator := database.NewMigrator(db, logger)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	migrator := database.NewMigrator(db, logger, "postgres")
 	goLoadServiceServer := grpc.NewHandler()
 	server := grpc.NewServer(goLoadServiceServer)
 	httpServer := http.NewServer()
-	// appServer := app.NewServer(migrator, server, httpServer, logger)
-	appServer := app.NewServer(server, httpServer, logger)
+	appServer := app.NewServer(migrator, server, httpServer, logger)
 	return appServer, func() {
 		cleanup2()
-		// cleanup()
+		cleanup()
 	}, nil
 }
 

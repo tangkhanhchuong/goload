@@ -10,7 +10,7 @@ import (
 
 	"goload/internal/configs"
 
-	_ "github.com/go-sql-driver/mysql" // Import MySQL driver
+	_ "github.com/lib/pq"
 )
 
 type Database interface {
@@ -42,7 +42,7 @@ type Database interface {
 }
 
 func InitializeDB(databaseConfig configs.Database) (*sql.DB, func(), error) {
-	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
+	connectionString := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
 		databaseConfig.Username,
 		databaseConfig.Password,
 		databaseConfig.Host,
@@ -50,7 +50,7 @@ func InitializeDB(databaseConfig configs.Database) (*sql.DB, func(), error) {
 		databaseConfig.Database,
 	)
 
-	db, err := sql.Open("mysql", connectionString)
+	db, err := sql.Open("postgres", connectionString)
 	if err != nil {
 		log.Printf("error connecting to the database: %+v\n", err)
 		return nil, nil, err
@@ -64,5 +64,5 @@ func InitializeDB(databaseConfig configs.Database) (*sql.DB, func(), error) {
 }
 
 func InitializeGoquDB(db *sql.DB) *goqu.Database {
-	return goqu.New("mysql", db)
+	return goqu.New("postgres", db)
 }
