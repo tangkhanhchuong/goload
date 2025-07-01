@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/doug-martin/goqu/v9"
 	codes "google.golang.org/grpc/codes"
@@ -20,7 +19,7 @@ const (
 )
 
 type AccountPassword struct {
-	OfAccountID uint64 `db:"of_account_db"`
+	OfAccountID uint64 `db:"of_account_id"`
 	Hash        string `db:"hash"`
 }
 
@@ -45,6 +44,7 @@ func NewAccountPasswordRepository(
 // CreateAccountPassword implements AccountPasswordRepository.
 func (a *accountPasswordRepository) CreateAccountPassword(ctx context.Context, accountPassword AccountPassword) (uint64, error) {
 	var ofAccountId uint64
+
 	_, err := a.database.
 		Insert(TabNameAccountPasswords).
 		Rows(goqu.Record{
@@ -55,7 +55,6 @@ func (a *accountPasswordRepository) CreateAccountPassword(ctx context.Context, a
 		Executor().
 		ScanValContext(ctx, &ofAccountId)
 	if err != nil {
-		fmt.Println("failed to create account password", err)
 		return 0, err
 	}
 
@@ -70,11 +69,9 @@ func (a *accountPasswordRepository) GetAccountPasswordByOfAccountID(ctx context.
 		Where(goqu.C(ColNameAccountPasswordsOfAccountID).Eq(ofAccountID)).
 		ScanStructContext(ctx, &accountPassword)
 	if err != nil {
-		fmt.Println("failed to get account password by of user id", err)
 		return AccountPassword{}, err
 	}
 	if !found {
-		fmt.Println("account password is not found")
 		return AccountPassword{}, ErrAccountPasswordNotFound
 	}
 

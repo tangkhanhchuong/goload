@@ -16,12 +16,12 @@ import (
 )
 
 var WireSet = wire.NewSet(
-	app.WireSet,
 	configs.WireSet,
 	dataaccess.WireSet,
 	logic.WireSet,
 	handler.WireSet,
 	utils.WireSet,
+	app.WireSet,
 )
 
 func InitializeServer(configFilePath configs.ConfigFilePath) (*app.Server, func(), error) {

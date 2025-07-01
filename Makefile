@@ -4,7 +4,7 @@ SWAGGER_DIR := api
 
 .PHONY: all generate clean vendor run_dev
 
-generate:
+generate: clean
 	buf generate api
 	wire internal/wiring/wire.go
 

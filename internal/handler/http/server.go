@@ -2,14 +2,16 @@ package http
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
+	"goload/internal/configs"
 	"goload/internal/generated/grpc/goload"
+	"goload/internal/utils"
 )
 
 type Server interface {
@@ -17,24 +19,37 @@ type Server interface {
 }
 
 type server struct {
+	httpConfig configs.HTTP
+	grpcConfig configs.GRPC
+	logger     *zap.Logger
 }
 
-func NewServer() Server {
-	return &server{}
+func NewServer(
+	httpConfig configs.HTTP,
+	grpcConfig configs.GRPC,
+	logger *zap.Logger,
+) Server {
+	return &server{
+		httpConfig: httpConfig,
+		grpcConfig: grpcConfig,
+		logger:     logger,
+	}
 }
 
 func (s *server) Start(ctx context.Context) error {
+	logger := utils.LoggerWithContext(ctx, s.logger)
+
 	mux := runtime.NewServeMux()
 	if err := goload.RegisterGoLoadServiceHandlerFromEndpoint(
 		ctx,
 		mux,
-		"0.0.0.0:8083",
+		s.grpcConfig.Address,
 		[]grpc.DialOption{
 			grpc.WithTransportCredentials(insecure.NewCredentials()),
 		}); err != nil {
 		return err
 	}
 
-	fmt.Println("http server is listening at port 8084")
-	return http.ListenAndServe(":8084", mux)
+	logger.With(zap.String("address", s.httpConfig.Address)).Info("http server is starting")
+	return http.ListenAndServe(s.httpConfig.Address, mux)
 }

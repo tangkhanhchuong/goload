@@ -402,7 +402,7 @@ func (x *CreateSessionRequest) GetPassword() string {
 
 type CreateSessionResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Token         string                 `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	Account       *Account               `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -437,11 +437,11 @@ func (*CreateSessionResponse) Descriptor() ([]byte, []int) {
 	return file_goload_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *CreateSessionResponse) GetToken() string {
+func (x *CreateSessionResponse) GetAccount() *Account {
 	if x != nil {
-		return x.Token
+		return x.Account
 	}
-	return ""
+	return nil
 }
 
 type CreateDownloadTaskRequest struct {
@@ -979,9 +979,9 @@ const file_goload_proto_rawDesc = "" +
 	"account_id\x18\x01 \x01(\x04R\taccountId\"\x8d\x01\n" +
 	"\x14CreateSessionRequest\x12=\n" +
 	"\faccount_name\x18\x01 \x01(\tB\x1a\xfaB\x17r\x152\x13^[a-zA-Z0-9]{6,32}$R\vaccountName\x126\n" +
-	"\bpassword\x18\x02 \x01(\tB\x1a\xfaB\x17r\x152\x13^[a-zA-Z0-9]{6,32}$R\bpassword\"-\n" +
-	"\x15CreateSessionResponse\x12\x14\n" +
-	"\x05token\x18\x01 \x01(\tR\x05token\"\x88\x01\n" +
+	"\bpassword\x18\x02 \x01(\tB\x1a\xfaB\x17r\x152\x13^[a-zA-Z0-9]{6,32}$R\bpassword\"B\n" +
+	"\x15CreateSessionResponse\x12)\n" +
+	"\aaccount\x18\x01 \x01(\v2\x0f.goload.AccountR\aaccount\"\x88\x01\n" +
 	"\x19CreateDownloadTaskRequest\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\x129\n" +
 	"\rdownload_type\x18\x02 \x01(\x0e2\x14.goload.DownloadTypeR\fdownloadType\x12\x1a\n" +
@@ -1020,10 +1020,10 @@ const file_goload_proto_rawDesc = "" +
 	"\vDownloading\x10\x02\x12\n" +
 	"\n" +
 	"\x06Failed\x10\x03\x12\v\n" +
-	"\aSuccess\x10\x042\xa8\x05\n" +
-	"\rGoLoadService\x12d\n" +
-	"\rCreateAccount\x12\x1c.goload.CreateAccountRequest\x1a\x1d.goload.CreateAccountResponse\"\x16\x82\xd3\xe4\x93\x02\x10:\x01*\"\v/v1/account\x12N\n" +
-	"\rCreateSession\x12\x1c.goload.CreateSessionRequest\x1a\x1d.goload.CreateSessionResponse\"\x00\x12]\n" +
+	"\aSuccess\x10\x042\xc0\x05\n" +
+	"\rGoLoadService\x12e\n" +
+	"\rCreateAccount\x12\x1c.goload.CreateAccountRequest\x1a\x1d.goload.CreateAccountResponse\"\x17\x82\xd3\xe4\x93\x02\x11:\x01*\"\f/v1/accounts\x12e\n" +
+	"\rCreateSession\x12\x1c.goload.CreateSessionRequest\x1a\x1d.goload.CreateSessionResponse\"\x17\x82\xd3\xe4\x93\x02\x11:\x01*\"\f/v1/sessions\x12]\n" +
 	"\x12CreateDownloadTask\x12!.goload.CreateDownloadTaskRequest\x1a\".goload.CreateDownloadTaskResponse\"\x00\x12`\n" +
 	"\x13GetDownloadTaskList\x12\".goload.GetDownloadTaskListRequest\x1a#.goload.GetDownloadTaskListResponse\"\x00\x12]\n" +
 	"\x12UpdateDownloadTask\x12!.goload.UpdateDownloadTaskRequest\x1a\".goload.UpdateDownloadTaskResponse\"\x00\x12]\n" +
@@ -1068,28 +1068,29 @@ var file_goload_proto_depIdxs = []int32{
 	2,  // 0: goload.DownloadTask.of_account:type_name -> goload.Account
 	0,  // 1: goload.DownloadTask.download_type:type_name -> goload.DownloadType
 	1,  // 2: goload.DownloadTask.download_status:type_name -> goload.DownloadStatus
-	0,  // 3: goload.CreateDownloadTaskRequest.download_type:type_name -> goload.DownloadType
-	3,  // 4: goload.CreateDownloadTaskResponse.download_task:type_name -> goload.DownloadTask
-	3,  // 5: goload.GetDownloadTaskListResponse.download_task_list:type_name -> goload.DownloadTask
-	4,  // 6: goload.GoLoadService.CreateAccount:input_type -> goload.CreateAccountRequest
-	6,  // 7: goload.GoLoadService.CreateSession:input_type -> goload.CreateSessionRequest
-	8,  // 8: goload.GoLoadService.CreateDownloadTask:input_type -> goload.CreateDownloadTaskRequest
-	10, // 9: goload.GoLoadService.GetDownloadTaskList:input_type -> goload.GetDownloadTaskListRequest
-	12, // 10: goload.GoLoadService.UpdateDownloadTask:input_type -> goload.UpdateDownloadTaskRequest
-	14, // 11: goload.GoLoadService.DeleteDownloadTask:input_type -> goload.DeleteDownloadTaskRequest
-	16, // 12: goload.GoLoadService.GetDownloadTaskFile:input_type -> goload.GetDownloadTaskFileRequest
-	5,  // 13: goload.GoLoadService.CreateAccount:output_type -> goload.CreateAccountResponse
-	7,  // 14: goload.GoLoadService.CreateSession:output_type -> goload.CreateSessionResponse
-	9,  // 15: goload.GoLoadService.CreateDownloadTask:output_type -> goload.CreateDownloadTaskResponse
-	11, // 16: goload.GoLoadService.GetDownloadTaskList:output_type -> goload.GetDownloadTaskListResponse
-	13, // 17: goload.GoLoadService.UpdateDownloadTask:output_type -> goload.UpdateDownloadTaskResponse
-	15, // 18: goload.GoLoadService.DeleteDownloadTask:output_type -> goload.DeleteDownloadTaskResponse
-	17, // 19: goload.GoLoadService.GetDownloadTaskFile:output_type -> goload.GetDownloadTaskFileResponse
-	13, // [13:20] is the sub-list for method output_type
-	6,  // [6:13] is the sub-list for method input_type
-	6,  // [6:6] is the sub-list for extension type_name
-	6,  // [6:6] is the sub-list for extension extendee
-	0,  // [0:6] is the sub-list for field type_name
+	2,  // 3: goload.CreateSessionResponse.account:type_name -> goload.Account
+	0,  // 4: goload.CreateDownloadTaskRequest.download_type:type_name -> goload.DownloadType
+	3,  // 5: goload.CreateDownloadTaskResponse.download_task:type_name -> goload.DownloadTask
+	3,  // 6: goload.GetDownloadTaskListResponse.download_task_list:type_name -> goload.DownloadTask
+	4,  // 7: goload.GoLoadService.CreateAccount:input_type -> goload.CreateAccountRequest
+	6,  // 8: goload.GoLoadService.CreateSession:input_type -> goload.CreateSessionRequest
+	8,  // 9: goload.GoLoadService.CreateDownloadTask:input_type -> goload.CreateDownloadTaskRequest
+	10, // 10: goload.GoLoadService.GetDownloadTaskList:input_type -> goload.GetDownloadTaskListRequest
+	12, // 11: goload.GoLoadService.UpdateDownloadTask:input_type -> goload.UpdateDownloadTaskRequest
+	14, // 12: goload.GoLoadService.DeleteDownloadTask:input_type -> goload.DeleteDownloadTaskRequest
+	16, // 13: goload.GoLoadService.GetDownloadTaskFile:input_type -> goload.GetDownloadTaskFileRequest
+	5,  // 14: goload.GoLoadService.CreateAccount:output_type -> goload.CreateAccountResponse
+	7,  // 15: goload.GoLoadService.CreateSession:output_type -> goload.CreateSessionResponse
+	9,  // 16: goload.GoLoadService.CreateDownloadTask:output_type -> goload.CreateDownloadTaskResponse
+	11, // 17: goload.GoLoadService.GetDownloadTaskList:output_type -> goload.GetDownloadTaskListResponse
+	13, // 18: goload.GoLoadService.UpdateDownloadTask:output_type -> goload.UpdateDownloadTaskResponse
+	15, // 19: goload.GoLoadService.DeleteDownloadTask:output_type -> goload.DeleteDownloadTaskResponse
+	17, // 20: goload.GoLoadService.GetDownloadTaskFile:output_type -> goload.GetDownloadTaskFileResponse
+	14, // [14:21] is the sub-list for method output_type
+	7,  // [7:14] is the sub-list for method input_type
+	7,  // [7:7] is the sub-list for extension type_name
+	7,  // [7:7] is the sub-list for extension extendee
+	0,  // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_goload_proto_init() }

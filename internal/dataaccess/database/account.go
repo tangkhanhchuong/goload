@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/doug-martin/goqu/v9"
 	codes "google.golang.org/grpc/codes"
@@ -46,6 +45,7 @@ func NewAccountRepository(
 // CreateAccount implements AccountRepository.
 func (a *accountRepository) CreateAccount(ctx context.Context, account Account) (uint64, error) {
 	var id uint64
+
 	_, err := a.database.
 		Insert(TabNameAccounts).
 		Rows(goqu.Record{
@@ -55,7 +55,6 @@ func (a *accountRepository) CreateAccount(ctx context.Context, account Account) 
 		Executor().
 		ScanValContext(ctx, &id)
 	if err != nil {
-		fmt.Println("failed to create account", err)
 		return 0, err
 	}
 
@@ -65,16 +64,15 @@ func (a *accountRepository) CreateAccount(ctx context.Context, account Account) 
 // GetAccountByAccountName implements AccountRepository.
 func (a *accountRepository) GetAccountByAccountName(ctx context.Context, accountName string) (Account, error) {
 	account := Account{}
+
 	found, err := a.database.
 		From(TabNameAccounts).
 		Where(goqu.C(ColNameAccountsAccountName).Eq(accountName)).
 		ScanStructContext(ctx, &account)
 	if err != nil {
-		fmt.Println("failed to get account by account name", err)
 		return Account{}, err
 	}
 	if !found {
-		fmt.Println("account is not found")
 		return Account{}, ErrAccountNotFound
 	}
 
@@ -84,18 +82,18 @@ func (a *accountRepository) GetAccountByAccountName(ctx context.Context, account
 // GetAccountByID implements AccountRepository.
 func (a *accountRepository) GetAccountByID(ctx context.Context, id uint64) (Account, error) {
 	account := Account{}
+
 	found, err := a.database.
 		From(TabNameAccounts).
 		Where(goqu.C(ColNameAccountsID).Eq(id)).
 		ScanStructContext(ctx, &account)
 	if err != nil {
-		fmt.Println("failed to get account by account id")
 		return Account{}, err
 	}
 	if !found {
-		fmt.Println("account is not found")
 		return Account{}, ErrAccountNotFound
 	}
+
 	return account, nil
 }
 

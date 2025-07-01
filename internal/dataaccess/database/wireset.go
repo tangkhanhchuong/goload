@@ -5,9 +5,10 @@ import (
 )
 
 var WireSet = wire.NewSet(
-	InitializeDB,
+	InitializeDBAndMigrateUp,
 	InitializeGoquDB,
 	NewMigrator,
 	NewAccountRepository,
 	NewAccountPasswordRepository,
+	NewPublicKeyRepository,
 )

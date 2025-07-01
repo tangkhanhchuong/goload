@@ -27,27 +27,35 @@ func InitializeServer(configFilePath configs.ConfigFilePath) (*app.Server, func(
 		return nil, nil, err
 	}
 	configsDatabase := config.Database
-	db, cleanup, err := database.InitializeDB(configsDatabase)
+	log := config.Log
+	logger, cleanup, err := utils.InitializeLogger(log)
 	if err != nil {
 		return nil, nil, err
 	}
-	log := config.Log
-	logger, cleanup2, err := utils.InitializeLogger(log)
+	db, cleanup2, err := database.InitializeDBAndMigrateUp(configsDatabase, logger)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	migrator := database.NewMigrator(db, logger)
 	goquDatabase := database.InitializeGoquDB(db)
 	accountRepository := database.NewAccountRepository(goquDatabase)
 	accountPasswordRepository := database.NewAccountPasswordRepository(goquDatabase)
 	auth := config.Auth
 	hashService := logic.NewHashService(auth)
-	accountService := logic.NewAccountService(goquDatabase, accountRepository, accountPasswordRepository, hashService)
+	publicKeyRepository := database.NewPublicKeyRepository(goquDatabase)
+	tokenService, err := logic.NewTokenService(accountRepository, publicKeyRepository, auth)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	accountService := logic.NewAccountService(goquDatabase, accountRepository, accountPasswordRepository, hashService, tokenService)
 	goLoadServiceServer := grpc.NewHandler(accountService)
-	server := grpc.NewServer(goLoadServiceServer)
-	httpServer := http.NewServer()
-	appServer := app.NewServer(migrator, server, httpServer, logger)
+	configsGRPC := config.GRPC
+	server := grpc.NewServer(goLoadServiceServer, configsGRPC, logger)
+	configsHTTP := config.HTTP
+	httpServer := http.NewServer(configsHTTP, configsGRPC, logger)
+	appServer := app.NewServer(server, httpServer, logger)
 	return appServer, func() {
 		cleanup2()
 		cleanup()
@@ -56,4 +64,4 @@ func InitializeServer(configFilePath configs.ConfigFilePath) (*app.Server, func(
 
 // wire.go:
 
-var WireSet = wire.NewSet(app.WireSet, configs.WireSet, dataaccess.WireSet, logic.WireSet, handler.WireSet, utils.WireSet)
+var WireSet = wire.NewSet(configs.WireSet, dataaccess.WireSet, logic.WireSet, handler.WireSet, utils.WireSet, app.WireSet)

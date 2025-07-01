@@ -13,7 +13,7 @@ import (
 
 var (
 	ErrHashHashDataFailed      = status.Error(codes.Internal, "failed to hash data")
-	ErrHashCompareHahsedFailed = status.Error(codes.Internal, "failed to compare hashed")
+	ErrHashCompareHashedFailed = status.Error(codes.Internal, "failed to compare hashed")
 )
 
 type HashService interface {
@@ -48,7 +48,7 @@ func (h *hashService) IsHashEqual(ctx context.Context, data string, hashed strin
 		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
 			return false, nil
 		}
-		return false, ErrHashCompareHahsedFailed
+		return false, ErrHashCompareHashedFailed
 	}
 
 	return true, nil

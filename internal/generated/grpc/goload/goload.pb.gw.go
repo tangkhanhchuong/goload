@@ -232,7 +232,7 @@ func RegisterGoLoadServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/goload.GoLoadService/CreateAccount", runtime.WithHTTPPathPattern("/v1/account"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/goload.GoLoadService/CreateAccount", runtime.WithHTTPPathPattern("/v1/accounts"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -252,7 +252,7 @@ func RegisterGoLoadServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/goload.GoLoadService/CreateSession", runtime.WithHTTPPathPattern("/goload.GoLoadService/CreateSession"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/goload.GoLoadService/CreateSession", runtime.WithHTTPPathPattern("/v1/sessions"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -397,7 +397,7 @@ func RegisterGoLoadServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/goload.GoLoadService/CreateAccount", runtime.WithHTTPPathPattern("/v1/account"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/goload.GoLoadService/CreateAccount", runtime.WithHTTPPathPattern("/v1/accounts"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -414,7 +414,7 @@ func RegisterGoLoadServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/goload.GoLoadService/CreateSession", runtime.WithHTTPPathPattern("/goload.GoLoadService/CreateSession"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/goload.GoLoadService/CreateSession", runtime.WithHTTPPathPattern("/v1/sessions"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -516,8 +516,8 @@ func RegisterGoLoadServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 }
 
 var (
-	pattern_GoLoadService_CreateAccount_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "account"}, ""))
-	pattern_GoLoadService_CreateSession_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"goload.GoLoadService", "CreateSession"}, ""))
+	pattern_GoLoadService_CreateAccount_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "accounts"}, ""))
+	pattern_GoLoadService_CreateSession_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "sessions"}, ""))
 	pattern_GoLoadService_CreateDownloadTask_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"goload.GoLoadService", "CreateDownloadTask"}, ""))
 	pattern_GoLoadService_GetDownloadTaskList_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"goload.GoLoadService", "GetDownloadTaskList"}, ""))
 	pattern_GoLoadService_UpdateDownloadTask_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"goload.GoLoadService", "UpdateDownloadTask"}, ""))

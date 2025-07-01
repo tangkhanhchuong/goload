@@ -4,10 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"log"
 
 	"github.com/doug-martin/goqu/v9"
 	_ "github.com/lib/pq"
+	"go.uber.org/zap"
 
 	"goload/internal/configs"
 )
@@ -40,7 +40,7 @@ type Database interface {
 	Update(table interface{}) *goqu.UpdateDataset
 }
 
-func InitializeDB(databaseConfig configs.Database) (*sql.DB, func(), error) {
+func InitializeDBAndMigrateUp(databaseConfig configs.Database, logger *zap.Logger) (*sql.DB, func(), error) {
 	connectionString := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
 		databaseConfig.Username,
 		databaseConfig.Password,
@@ -51,12 +51,18 @@ func InitializeDB(databaseConfig configs.Database) (*sql.DB, func(), error) {
 
 	db, err := sql.Open("postgres", connectionString)
 	if err != nil {
-		log.Printf("error connecting to the database: %+v\n", err)
+		logger.With(zap.Error(err)).Error("error connecting to the database")
 		return nil, nil, err
 	}
 
 	cleanup := func() {
 		db.Close()
+	}
+
+	migrator := NewMigrator(db, logger)
+	err = migrator.Up(context.Background())
+	if err != nil {
+		logger.With(zap.Error(err)).Error("failed to execute database up migration")
 	}
 
 	return db, cleanup, nil

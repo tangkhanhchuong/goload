@@ -48,38 +48,6 @@
         ]
       }
     },
-    "/goload.GoLoadService/CreateSession": {
-      "post": {
-        "operationId": "GoLoadService_CreateSession",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/goloadCreateSessionResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/goloadCreateSessionRequest"
-            }
-          }
-        ],
-        "tags": [
-          "GoLoadService"
-        ]
-      }
-    },
     "/goload.GoLoadService/DeleteDownloadTask": {
       "post": {
         "operationId": "GoLoadService_DeleteDownloadTask",
@@ -217,7 +185,7 @@
         ]
       }
     },
-    "/v1/account": {
+    "/v1/accounts": {
       "post": {
         "operationId": "GoLoadService_CreateAccount",
         "responses": {
@@ -241,6 +209,38 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/goloadCreateAccountRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GoLoadService"
+        ]
+      }
+    },
+    "/v1/sessions": {
+      "post": {
+        "operationId": "GoLoadService_CreateSession",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/goloadCreateSessionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/goloadCreateSessionRequest"
             }
           }
         ],
@@ -319,8 +319,8 @@
     "goloadCreateSessionResponse": {
       "type": "object",
       "properties": {
-        "token": {
-          "type": "string"
+        "account": {
+          "$ref": "#/definitions/goloadAccount"
         }
       }
     },

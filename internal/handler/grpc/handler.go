@@ -3,10 +3,15 @@ package grpc
 import (
 	"context"
 
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
+
 	"goload/internal/generated/grpc/goload"
 	"goload/internal/logic"
+)
 
-	"google.golang.org/grpc"
+const (
+	AuthTokenMetadataName = "goload-auth"
 )
 
 type Handler struct {
@@ -24,7 +29,7 @@ func NewHandler(
 
 // CreateAccount implements goload.GoLoadServiceServer.
 func (handler *Handler) CreateAccount(ctx context.Context, request *goload.CreateAccountRequest) (*goload.CreateAccountResponse, error) {
-	output, err := handler.accountService.CreateAccount(ctx, logic.CreateAccountInput{
+	account, err := handler.accountService.CreateAccount(ctx, logic.CreateAccountInput{
 		AccountName: request.GetAccountName(),
 		Password:    request.GetPassword(),
 	})
@@ -33,17 +38,34 @@ func (handler *Handler) CreateAccount(ctx context.Context, request *goload.Creat
 	}
 
 	return &goload.CreateAccountResponse{
-		AccountId: output.ID,
+		AccountId: account.ID,
+	}, nil
+}
+
+// CreateSession implements goload.GoLoadServiceServer.
+func (h *Handler) CreateSession(ctx context.Context, request *goload.CreateSessionRequest) (*goload.CreateSessionResponse, error) {
+	session, err := h.accountService.CreateSession(ctx, logic.CreateSessionInput{
+		AccountName: request.GetAccountName(),
+		Password:    request.GetPassword(),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	err = grpc.SetHeader(ctx, metadata.Pairs(AuthTokenMetadataName, session.Token))
+	if err != nil {
+		return nil, err
+	}
+
+	return &goload.CreateSessionResponse{
+		Account: &goload.Account{
+			Id:          session.Account.Id,
+			AccountName: session.Account.AccountName},
 	}, nil
 }
 
 // CreateDownloadTask implements goload.GoLoadServiceServer.
 func (h *Handler) CreateDownloadTask(context.Context, *goload.CreateDownloadTaskRequest) (*goload.CreateDownloadTaskResponse, error) {
-	panic("unimplemented")
-}
-
-// CreateSession implements goload.GoLoadServiceServer.
-func (h *Handler) CreateSession(context.Context, *goload.CreateSessionRequest) (*goload.CreateSessionResponse, error) {
 	panic("unimplemented")
 }
 

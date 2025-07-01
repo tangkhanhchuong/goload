@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS account_passwords (
     FOREIGN KEY (of_account_id) REFERENCES accounts(id)
 );
 
-CREATE TABLE IF NOT EXISTS token_public_keys (
+CREATE TABLE IF NOT EXISTS public_keys (
     id BIGSERIAL PRIMARY KEY,
     public_key BYTEA NOT NULL
 );

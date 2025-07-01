@@ -7,4 +7,5 @@ import (
 var WireSet = wire.NewSet(
 	NewAccountService,
 	NewHashService,
+	NewTokenService,
 )

@@ -9,11 +9,16 @@ import "google/api/annotations.proto";
 service GoLoadService {
     rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse) {
         option (google.api.http) = {
-            post: "/v1/account"
+            post: "/v1/accounts"
             body: "*"
         };
     }
-    rpc CreateSession(CreateSessionRequest) returns (CreateSessionResponse) {}
+    rpc CreateSession(CreateSessionRequest) returns (CreateSessionResponse) {
+        option (google.api.http) = {
+            post: "/v1/sessions"
+            body: "*"
+        };
+    }
     rpc CreateDownloadTask(CreateDownloadTaskRequest) returns (CreateDownloadTaskResponse) {}
     rpc GetDownloadTaskList(GetDownloadTaskListRequest) returns (GetDownloadTaskListResponse) {}
     rpc UpdateDownloadTask(UpdateDownloadTaskRequest) returns (UpdateDownloadTaskResponse) {}
@@ -70,7 +75,7 @@ message CreateSessionRequest {
 }
 
 message CreateSessionResponse {
-    string token = 1;
+    Account account = 1;
 }
 
 message CreateDownloadTaskRequest {
