@@ -8,7 +8,7 @@ generate: clean
 	buf generate api
 	wire internal/wiring/wire.go
 
-run_dev: generate
+run_dev:
 	go run cmd/main.go server
 
 clean:

@@ -116,16 +116,21 @@ func local_request_GoLoadService_CreateDownloadTask_0(ctx context.Context, marsh
 	return msg, metadata, err
 }
 
+var filter_GoLoadService_GetDownloadTaskList_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+
 func request_GoLoadService_GetDownloadTaskList_0(ctx context.Context, marshaler runtime.Marshaler, client GoLoadServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq GetDownloadTaskListRequest
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_GoLoadService_GetDownloadTaskList_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := client.GetDownloadTaskList(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -136,7 +141,10 @@ func local_request_GoLoadService_GetDownloadTaskList_0(ctx context.Context, mars
 		protoReq GetDownloadTaskListRequest
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_GoLoadService_GetDownloadTaskList_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.GetDownloadTaskList(ctx, &protoReq)
@@ -147,12 +155,21 @@ func request_GoLoadService_UpdateDownloadTask_0(ctx context.Context, marshaler r
 	var (
 		protoReq UpdateDownloadTaskRequest
 		metadata runtime.ServerMetadata
+		err      error
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	val, ok := pathParams["id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+	}
+	protoReq.Id, err = runtime.Uint64(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 	msg, err := client.UpdateDownloadTask(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -162,9 +179,18 @@ func local_request_GoLoadService_UpdateDownloadTask_0(ctx context.Context, marsh
 	var (
 		protoReq UpdateDownloadTaskRequest
 		metadata runtime.ServerMetadata
+		err      error
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	val, ok := pathParams["id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+	}
+	protoReq.Id, err = runtime.Uint64(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 	msg, err := server.UpdateDownloadTask(ctx, &protoReq)
 	return msg, metadata, err
@@ -174,12 +200,18 @@ func request_GoLoadService_DeleteDownloadTask_0(ctx context.Context, marshaler r
 	var (
 		protoReq DeleteDownloadTaskRequest
 		metadata runtime.ServerMetadata
+		err      error
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	val, ok := pathParams["id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+	}
+	protoReq.Id, err = runtime.Uint64(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 	msg, err := client.DeleteDownloadTask(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -189,9 +221,15 @@ func local_request_GoLoadService_DeleteDownloadTask_0(ctx context.Context, marsh
 	var (
 		protoReq DeleteDownloadTaskRequest
 		metadata runtime.ServerMetadata
+		err      error
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	val, ok := pathParams["id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+	}
+	protoReq.Id, err = runtime.Uint64(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 	msg, err := server.DeleteDownloadTask(ctx, &protoReq)
 	return msg, metadata, err
@@ -272,7 +310,7 @@ func RegisterGoLoadServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/goload.GoLoadService/CreateDownloadTask", runtime.WithHTTPPathPattern("/goload.GoLoadService/CreateDownloadTask"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/goload.GoLoadService/CreateDownloadTask", runtime.WithHTTPPathPattern("/v1/download-tasks"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -286,13 +324,13 @@ func RegisterGoLoadServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 		}
 		forward_GoLoadService_CreateDownloadTask_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodPost, pattern_GoLoadService_GetDownloadTaskList_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodGet, pattern_GoLoadService_GetDownloadTaskList_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/goload.GoLoadService/GetDownloadTaskList", runtime.WithHTTPPathPattern("/goload.GoLoadService/GetDownloadTaskList"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/goload.GoLoadService/GetDownloadTaskList", runtime.WithHTTPPathPattern("/v1/download-tasks"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -306,13 +344,13 @@ func RegisterGoLoadServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 		}
 		forward_GoLoadService_GetDownloadTaskList_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodPost, pattern_GoLoadService_UpdateDownloadTask_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPatch, pattern_GoLoadService_UpdateDownloadTask_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/goload.GoLoadService/UpdateDownloadTask", runtime.WithHTTPPathPattern("/goload.GoLoadService/UpdateDownloadTask"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/goload.GoLoadService/UpdateDownloadTask", runtime.WithHTTPPathPattern("/v1/download-tasks/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -326,13 +364,13 @@ func RegisterGoLoadServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 		}
 		forward_GoLoadService_UpdateDownloadTask_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodPost, pattern_GoLoadService_DeleteDownloadTask_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodDelete, pattern_GoLoadService_DeleteDownloadTask_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/goload.GoLoadService/DeleteDownloadTask", runtime.WithHTTPPathPattern("/goload.GoLoadService/DeleteDownloadTask"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/goload.GoLoadService/DeleteDownloadTask", runtime.WithHTTPPathPattern("/v1/download-tasks/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -431,7 +469,7 @@ func RegisterGoLoadServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/goload.GoLoadService/CreateDownloadTask", runtime.WithHTTPPathPattern("/goload.GoLoadService/CreateDownloadTask"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/goload.GoLoadService/CreateDownloadTask", runtime.WithHTTPPathPattern("/v1/download-tasks"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -444,11 +482,11 @@ func RegisterGoLoadServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 		}
 		forward_GoLoadService_CreateDownloadTask_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodPost, pattern_GoLoadService_GetDownloadTaskList_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodGet, pattern_GoLoadService_GetDownloadTaskList_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/goload.GoLoadService/GetDownloadTaskList", runtime.WithHTTPPathPattern("/goload.GoLoadService/GetDownloadTaskList"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/goload.GoLoadService/GetDownloadTaskList", runtime.WithHTTPPathPattern("/v1/download-tasks"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -461,11 +499,11 @@ func RegisterGoLoadServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 		}
 		forward_GoLoadService_GetDownloadTaskList_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodPost, pattern_GoLoadService_UpdateDownloadTask_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPatch, pattern_GoLoadService_UpdateDownloadTask_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/goload.GoLoadService/UpdateDownloadTask", runtime.WithHTTPPathPattern("/goload.GoLoadService/UpdateDownloadTask"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/goload.GoLoadService/UpdateDownloadTask", runtime.WithHTTPPathPattern("/v1/download-tasks/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -478,11 +516,11 @@ func RegisterGoLoadServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 		}
 		forward_GoLoadService_UpdateDownloadTask_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodPost, pattern_GoLoadService_DeleteDownloadTask_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodDelete, pattern_GoLoadService_DeleteDownloadTask_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/goload.GoLoadService/DeleteDownloadTask", runtime.WithHTTPPathPattern("/goload.GoLoadService/DeleteDownloadTask"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/goload.GoLoadService/DeleteDownloadTask", runtime.WithHTTPPathPattern("/v1/download-tasks/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -518,10 +556,10 @@ func RegisterGoLoadServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 var (
 	pattern_GoLoadService_CreateAccount_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "accounts"}, ""))
 	pattern_GoLoadService_CreateSession_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "sessions"}, ""))
-	pattern_GoLoadService_CreateDownloadTask_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"goload.GoLoadService", "CreateDownloadTask"}, ""))
-	pattern_GoLoadService_GetDownloadTaskList_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"goload.GoLoadService", "GetDownloadTaskList"}, ""))
-	pattern_GoLoadService_UpdateDownloadTask_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"goload.GoLoadService", "UpdateDownloadTask"}, ""))
-	pattern_GoLoadService_DeleteDownloadTask_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"goload.GoLoadService", "DeleteDownloadTask"}, ""))
+	pattern_GoLoadService_CreateDownloadTask_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "download-tasks"}, ""))
+	pattern_GoLoadService_GetDownloadTaskList_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "download-tasks"}, ""))
+	pattern_GoLoadService_UpdateDownloadTask_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "download-tasks", "id"}, ""))
+	pattern_GoLoadService_DeleteDownloadTask_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "download-tasks", "id"}, ""))
 	pattern_GoLoadService_GetDownloadTaskFile_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"goload.GoLoadService", "GetDownloadTaskFile"}, ""))
 )
 

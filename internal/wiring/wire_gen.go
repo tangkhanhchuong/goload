@@ -50,7 +50,9 @@ func InitializeServer(configFilePath configs.ConfigFilePath) (*app.Server, func(
 		return nil, nil, err
 	}
 	accountService := logic.NewAccountService(goquDatabase, accountRepository, accountPasswordRepository, hashService, tokenService)
-	goLoadServiceServer := grpc.NewHandler(accountService)
+	downloadTaskRepository := database.NewDownloadRepository(goquDatabase, logger)
+	downloadTaskService := logic.NewDownloadTaskService(goquDatabase, downloadTaskRepository, accountRepository)
+	goLoadServiceServer := grpc.NewHandler(accountService, downloadTaskService, tokenService)
 	configsGRPC := config.GRPC
 	server := grpc.NewServer(goLoadServiceServer, configsGRPC, logger)
 	configsHTTP := config.HTTP

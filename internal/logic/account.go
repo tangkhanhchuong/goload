@@ -5,8 +5,8 @@ import (
 	"errors"
 
 	"github.com/doug-martin/goqu/v9"
-	codes "google.golang.org/grpc/codes"
-	status "google.golang.org/grpc/status"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"goload/internal/dataaccess/database"
 	"goload/internal/generated/grpc/goload"
@@ -147,10 +147,14 @@ func (a *accountService) CreateSession(ctx context.Context, input CreateSessionI
 	}
 
 	return CreateSessionOutput{
-		Account: goload.Account{
-			Id:          foundAccount.ID,
-			AccountName: foundAccount.AccountName,
-		},
-		Token: token,
+		Account: *a.toProtoAccount(foundAccount),
+		Token:   token,
 	}, nil
+}
+
+func (a accountService) toProtoAccount(account database.Account) *goload.Account {
+	return &goload.Account{
+		Id:          account.ID,
+		AccountName: account.AccountName,
+	}
 }

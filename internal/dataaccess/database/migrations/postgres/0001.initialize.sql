@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS public_keys (
 );
 
 CREATE TABLE IF NOT EXISTS download_tasks (
-    task_id BIGSERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     of_account_id BIGINT,
     download_type SMALLINT NOT NULL,
     url TEXT NOT NULL,

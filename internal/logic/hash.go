@@ -5,8 +5,8 @@ import (
 	"errors"
 
 	"golang.org/x/crypto/bcrypt"
-	codes "google.golang.org/grpc/codes"
-	status "google.golang.org/grpc/status"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"goload/internal/configs"
 )

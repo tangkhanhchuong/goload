@@ -19,10 +19,27 @@ service GoLoadService {
             body: "*"
         };
     }
-    rpc CreateDownloadTask(CreateDownloadTaskRequest) returns (CreateDownloadTaskResponse) {}
-    rpc GetDownloadTaskList(GetDownloadTaskListRequest) returns (GetDownloadTaskListResponse) {}
-    rpc UpdateDownloadTask(UpdateDownloadTaskRequest) returns (UpdateDownloadTaskResponse) {}
-    rpc DeleteDownloadTask(DeleteDownloadTaskRequest) returns (DeleteDownloadTaskResponse) {}
+    rpc CreateDownloadTask(CreateDownloadTaskRequest) returns (CreateDownloadTaskResponse) {
+        option (google.api.http) = {
+            post: "/v1/download-tasks"
+            body: "*"
+        };
+    }
+    rpc GetDownloadTaskList(GetDownloadTaskListRequest) returns (GetDownloadTaskListResponse) {
+        option (google.api.http) = {
+            get: "/v1/download-tasks"
+        };
+    }
+    rpc UpdateDownloadTask(UpdateDownloadTaskRequest) returns (UpdateDownloadTaskResponse) {
+        option (google.api.http) = {
+            patch: "/v1/download-tasks/{id}"
+            body: "*"
+        };}
+    rpc DeleteDownloadTask(DeleteDownloadTaskRequest) returns (DeleteDownloadTaskResponse) {
+        option (google.api.http) = {
+            delete: "/v1/download-tasks/{id}"
+        };
+    }
     rpc GetDownloadTaskFile(GetDownloadTaskFileRequest) returns (stream GetDownloadTaskFileResponse) {}
 }
 
@@ -76,12 +93,11 @@ message CreateSessionRequest {
 
 message CreateSessionResponse {
     Account account = 1;
+    string token = 2;
 }
 
 message CreateDownloadTaskRequest {
-    string token = 1;
-    DownloadType download_type = 2;
-    string url = 3 [(validate.rules).string = {
+    string url = 1 [(validate.rules).string = {
         uri: true,
     }];
 }
@@ -91,9 +107,8 @@ message CreateDownloadTaskResponse {
 }
 
 message GetDownloadTaskListRequest {
-    string token = 1;
-    uint64 offset = 2;
-    uint64 limit = 3 [(validate.rules).uint64 = {
+    uint64 offset = 1;
+    uint64 limit = 2 [(validate.rules).uint64 = {
         lte: 100
     }];
 }
@@ -103,27 +118,25 @@ message GetDownloadTaskListResponse {
 }
 
 message UpdateDownloadTaskRequest {
-    string token = 1;
-    uint64 download_task_id = 2;
-    string url = 3 [(validate.rules).string = {
+    uint64 id = 1;
+    string url = 2 [(validate.rules).string = {
         uri: true,
     }];
+    DownloadStatus download_task_status = 3;
 }
 message UpdateDownloadTaskResponse {
-    uint64 download_task_id = 1;
+    bool updated = 1;
 }
 
 message DeleteDownloadTaskRequest {
-    string token = 1;
-    uint64 download_task_id = 2;
+    uint64 id = 1;
 }
 
 message DeleteDownloadTaskResponse {
-    uint64 download_task_id = 1;
+    bool deleted = 1;
 }
 
 message GetDownloadTaskFileRequest {
-    string token = 1;
     uint64 download_task_id = 2;
 }
 message GetDownloadTaskFileResponse {

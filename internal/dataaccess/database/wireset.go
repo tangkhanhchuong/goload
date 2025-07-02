@@ -11,4 +11,5 @@ var WireSet = wire.NewSet(
 	NewAccountRepository,
 	NewAccountPasswordRepository,
 	NewPublicKeyRepository,
+	NewDownloadRepository,
 )

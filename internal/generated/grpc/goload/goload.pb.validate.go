@@ -684,6 +684,8 @@ func (m *CreateSessionResponse) validate(all bool) error {
 		}
 	}
 
+	// no validation rules for Token
+
 	if len(errors) > 0 {
 		return CreateSessionResponseMultiError(errors)
 	}
@@ -785,10 +787,6 @@ func (m *CreateDownloadTaskRequest) validate(all bool) error {
 	}
 
 	var errors []error
-
-	// no validation rules for Token
-
-	// no validation rules for DownloadType
 
 	if uri, err := url.Parse(m.GetUrl()); err != nil {
 		err = CreateDownloadTaskRequestValidationError{
@@ -1044,8 +1042,6 @@ func (m *GetDownloadTaskListRequest) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Token
-
 	// no validation rules for Offset
 
 	if m.GetLimit() > 100 {
@@ -1300,9 +1296,7 @@ func (m *UpdateDownloadTaskRequest) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Token
-
-	// no validation rules for DownloadTaskId
+	// no validation rules for Id
 
 	if uri, err := url.Parse(m.GetUrl()); err != nil {
 		err = UpdateDownloadTaskRequestValidationError{
@@ -1324,6 +1318,8 @@ func (m *UpdateDownloadTaskRequest) validate(all bool) error {
 		}
 		errors = append(errors, err)
 	}
+
+	// no validation rules for DownloadTaskStatus
 
 	if len(errors) > 0 {
 		return UpdateDownloadTaskRequestMultiError(errors)
@@ -1427,7 +1423,7 @@ func (m *UpdateDownloadTaskResponse) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for DownloadTaskId
+	// no validation rules for Updated
 
 	if len(errors) > 0 {
 		return UpdateDownloadTaskResponseMultiError(errors)
@@ -1531,9 +1527,7 @@ func (m *DeleteDownloadTaskRequest) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Token
-
-	// no validation rules for DownloadTaskId
+	// no validation rules for Id
 
 	if len(errors) > 0 {
 		return DeleteDownloadTaskRequestMultiError(errors)
@@ -1637,7 +1631,7 @@ func (m *DeleteDownloadTaskResponse) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for DownloadTaskId
+	// no validation rules for Deleted
 
 	if len(errors) > 0 {
 		return DeleteDownloadTaskResponseMultiError(errors)
@@ -1740,8 +1734,6 @@ func (m *GetDownloadTaskFileRequest) validate(all bool) error {
 	}
 
 	var errors []error
-
-	// no validation rules for Token
 
 	// no validation rules for DownloadTaskId
 
