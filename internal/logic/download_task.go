@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc/status"
 
 	"goload/internal/dataaccess/database"
+	"goload/internal/dataaccess/mq/producer"
 	"goload/internal/generated/grpc/goload"
 )
 
@@ -65,28 +66,31 @@ type DownloadTaskService interface {
 }
 
 type downloadTaskService struct {
-	database               *goqu.Database
-	downloadTaskRepository database.DownloadTaskRepository
-	accountRepository      database.AccountRepository
+	database                    *goqu.Database
+	downloadTaskRepository      database.DownloadTaskRepository
+	accountRepository           database.AccountRepository
+	downloadTaskCreatedProvider producer.DownloadTaskCreatedProducer
 }
 
 func NewDownloadTaskService(
 	database *goqu.Database,
 	downloadTaskRepository database.DownloadTaskRepository,
 	accountRepository database.AccountRepository,
+	downloadTaskCreatedProvider producer.DownloadTaskCreatedProducer,
 ) DownloadTaskService {
 	return &downloadTaskService{
-		database:               database,
-		downloadTaskRepository: downloadTaskRepository,
-		accountRepository:      accountRepository,
+		database:                    database,
+		downloadTaskRepository:      downloadTaskRepository,
+		accountRepository:           accountRepository,
+		downloadTaskCreatedProvider: downloadTaskCreatedProvider,
 	}
 }
 
 // CreateDownloadTask implements DownloadTaskService.
 func (d *downloadTaskService) CreateDownloadTask(ctx context.Context, input CreateDownloadTaskInput) (CreateDownloadTaskOutput, error) {
-	account, err := d.accountRepository.GetAccountByID(ctx, input.OfAccountID)
-	if err != nil {
-		return CreateDownloadTaskOutput{}, err
+	account, getAccountErr := d.accountRepository.GetAccountByID(ctx, input.OfAccountID)
+	if getAccountErr != nil {
+		return CreateDownloadTaskOutput{}, getAccountErr
 	}
 
 	downloadTask := database.DownloadTask{
@@ -96,11 +100,29 @@ func (d *downloadTaskService) CreateDownloadTask(ctx context.Context, input Crea
 		DownloadStatus: goload.DownloadStatus_Pending,
 		Metadata:       "{}",
 	}
-	downloadTaskID, err := d.downloadTaskRepository.CreateDownloadTask(ctx, downloadTask)
-	if err != nil {
-		return CreateDownloadTaskOutput{}, err
+	txnErr := d.database.WithTx(func(td *goqu.TxDatabase) error {
+		downloadTaskID, createDownloadTaskErr := d.downloadTaskRepository.
+			WithDatabase(td).
+			CreateDownloadTask(ctx, downloadTask)
+		if createDownloadTaskErr != nil {
+			return createDownloadTaskErr
+		}
+		downloadTask.ID = downloadTaskID
+
+		downloadTaskCreatedEvent := producer.DownloadTaskCreatedEvent{
+			DownloadTaskID: downloadTaskID,
+		}
+		produceErr := d.downloadTaskCreatedProvider.Produce(ctx, downloadTaskCreatedEvent)
+		if produceErr != nil {
+			return produceErr
+		}
+
+		return nil
+	})
+
+	if txnErr != nil {
+		return CreateDownloadTaskOutput{}, txnErr
 	}
-	downloadTask.ID = downloadTaskID
 
 	return CreateDownloadTaskOutput{
 		DownloadTask: d.toProtoDownloadTask(downloadTask, account),
