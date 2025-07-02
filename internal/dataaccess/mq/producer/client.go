@@ -17,16 +17,6 @@ var (
 	produceMessageFailed = status.Error(codes.Internal, "failed to produce message")
 )
 
-func newSaramaConfig(mqConfig configs.MQ) *sarama.Config {
-	saramaConfig := sarama.NewConfig()
-	saramaConfig.Producer.Retry.Max = 1
-	saramaConfig.Producer.RequiredAcks = sarama.WaitForAll
-	saramaConfig.Producer.Return.Successes = true
-	saramaConfig.ClientID = mqConfig.ClientID
-	saramaConfig.Metadata.Full = true
-	return saramaConfig
-}
-
 type Client interface {
 	Produce(ctx context.Context, topic string, payload []byte) error
 }

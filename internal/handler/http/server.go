@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"net"
 	"net/http"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -16,11 +17,13 @@ import (
 
 type Server interface {
 	Start(ctx context.Context) error
+	Stop(ctx context.Context) error
 }
 
 type server struct {
 	httpConfig configs.HTTP
 	grpcConfig configs.GRPC
+	httpServer *http.Server
 	logger     *zap.Logger
 }
 
@@ -50,6 +53,21 @@ func (s *server) Start(ctx context.Context) error {
 		return err
 	}
 
+	listener, err := net.Listen("tcp", s.httpConfig.Address)
+	if err != nil {
+		return err
+	}
+	s.httpServer = &http.Server{
+		Handler: mux,
+	}
+
 	logger.With(zap.String("address", s.httpConfig.Address)).Info("http server is starting")
-	return http.ListenAndServe(s.httpConfig.Address, mux)
+	return s.httpServer.Serve(listener)
+}
+
+func (s *server) Stop(ctx context.Context) error {
+	if s.httpServer != nil {
+		return s.httpServer.Shutdown(ctx)
+	}
+	return nil
 }

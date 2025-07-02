@@ -12,10 +12,12 @@ import (
 	"goload/internal/configs"
 	"goload/internal/dataaccess"
 	"goload/internal/dataaccess/database"
+	"goload/internal/dataaccess/mq/consumer"
 	"goload/internal/dataaccess/mq/producer"
 	"goload/internal/handler"
 	"goload/internal/handler/grpc"
 	"goload/internal/handler/http"
+	"goload/internal/handler/mq"
 	"goload/internal/logic"
 	"goload/internal/utils"
 )
@@ -52,8 +54,8 @@ func InitializeServer(configFilePath configs.ConfigFilePath) (*app.Server, func(
 	}
 	accountService := logic.NewAccountService(goquDatabase, accountRepository, accountPasswordRepository, hashService, tokenService)
 	downloadTaskRepository := database.NewDownloadRepository(goquDatabase, logger)
-	mq := config.MQ
-	client, cleanup3, err := producer.NewClient(mq, logger)
+	configsMQ := config.MQ
+	client, cleanup3, err := producer.NewClient(configsMQ, logger)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -66,7 +68,16 @@ func InitializeServer(configFilePath configs.ConfigFilePath) (*app.Server, func(
 	server := grpc.NewServer(goLoadServiceServer, configsGRPC, logger)
 	configsHTTP := config.HTTP
 	httpServer := http.NewServer(configsHTTP, configsGRPC, logger)
-	appServer := app.NewServer(server, httpServer, logger)
+	downloadTaskCreated := mq.NewDownloadTaskCreated(downloadTaskService, logger)
+	consumerConsumer, err := consumer.NewConsumer(configsMQ, logger)
+	if err != nil {
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	messageConsumer := mq.NewMessageConsumer(downloadTaskCreated, consumerConsumer, logger)
+	appServer := app.NewServer(server, httpServer, messageConsumer, logger)
 	return appServer, func() {
 		cleanup3()
 		cleanup2()

@@ -14,11 +14,13 @@ import (
 
 type Server interface {
 	Start(ctx context.Context) error
+	Stop(ctx context.Context) error
 }
 
 type server struct {
 	handler    goload.GoLoadServiceServer
 	grpcConfig configs.GRPC
+	grpcServer *grpc.Server
 	logger     *zap.Logger
 }
 
@@ -42,11 +44,29 @@ func (s *server) Start(ctx context.Context) error {
 		return err
 	}
 
-	defer listener.Close()
-
 	server := grpc.NewServer()
+	s.grpcServer = server
 	goload.RegisterGoLoadServiceServer(server, s.handler)
 
 	logger.With(zap.String("address", s.grpcConfig.Address)).Info("grpc server is starting")
 	return server.Serve(listener)
+}
+
+// Stop implements Server.
+func (s *server) Stop(ctx context.Context) error {
+	done := make(chan struct{})
+
+	go func() {
+		if s.grpcServer != nil {
+			s.grpcServer.GracefulStop()
+		}
+		close(done)
+	}()
+
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	case <-done:
+		return nil
+	}
 }

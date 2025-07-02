@@ -1,7 +1,8 @@
-package consumer
+package mq
 
 import "github.com/google/wire"
 
 var WireSet = wire.NewSet(
-	NewConsumer,
+	NewDownloadTaskCreated,
+	NewMessageConsumer,
 )

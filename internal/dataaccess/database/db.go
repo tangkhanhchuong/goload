@@ -54,6 +54,7 @@ func InitializeDBAndMigrateUp(databaseConfig configs.Database, logger *zap.Logge
 		logger.With(zap.Error(err)).Error("error connecting to the database")
 		return nil, nil, err
 	}
+	logger.Info("database connected")
 
 	cleanup := func() {
 		db.Close()
