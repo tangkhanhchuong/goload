@@ -12,6 +12,7 @@ import (
 	"goload/internal/configs"
 	"goload/internal/dataaccess"
 	"goload/internal/dataaccess/database"
+	"goload/internal/dataaccess/file"
 	"goload/internal/dataaccess/mq/consumer"
 	"goload/internal/dataaccess/mq/producer"
 	"goload/internal/handler"
@@ -62,7 +63,15 @@ func InitializeServer(configFilePath configs.ConfigFilePath) (*app.Server, func(
 		return nil, nil, err
 	}
 	downloadTaskCreatedProducer := producer.NewDownloadTaskCreatedProducer(client, logger)
-	downloadTaskService := logic.NewDownloadTaskService(goquDatabase, downloadTaskRepository, accountRepository, downloadTaskCreatedProducer)
+	download := config.Download
+	fileClient, err := file.NewClient(download, logger)
+	if err != nil {
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	downloadTaskService := logic.NewDownloadTaskService(goquDatabase, downloadTaskRepository, accountRepository, downloadTaskCreatedProducer, fileClient, logger)
 	goLoadServiceServer := grpc.NewHandler(accountService, downloadTaskService, tokenService)
 	configsGRPC := config.GRPC
 	server := grpc.NewServer(goLoadServiceServer, configsGRPC, logger)

@@ -48,6 +48,7 @@ type DownloadTaskRepository interface {
 	GetDownloadTaskListByOfAccountID(ctx context.Context, accountID, offset, limit uint64) ([]DownloadTask, error)
 	CountDownloadTasksByOfAccountID(ctx context.Context, accountID uint64) (uint64, error)
 	GetDownloadTaskByID(ctx context.Context, id uint64) (DownloadTask, error)
+	GetDownloadTaskByIDWithXLock(ctx context.Context, id uint64) (DownloadTask, error)
 	WithDatabase(database Database) DownloadTaskRepository
 }
 
@@ -170,6 +171,25 @@ func (d *downloadTaskRepository) GetDownloadTaskByID(ctx context.Context, id uin
 	found, err := d.database.
 		From(TabNameDownloadTasks).
 		Where(goqu.C(ColNameDownloadTasksID).Eq(id)).
+		ScanStructContext(ctx, &downloadTask)
+	if err != nil {
+		return DownloadTask{}, err
+	}
+	if !found {
+		return DownloadTask{}, ErrDownloadTaskNotFound
+	}
+
+	return downloadTask, nil
+}
+
+// GetDownloadTaskByIDWithXLock implements DownloadTaskRepository.
+func (d *downloadTaskRepository) GetDownloadTaskByIDWithXLock(ctx context.Context, id uint64) (DownloadTask, error) {
+	downloadTask := DownloadTask{}
+
+	found, err := d.database.
+		From(TabNameDownloadTasks).
+		Where(goqu.C(ColNameDownloadTasksID).Eq(id)).
+		ForUpdate(goqu.Wait).
 		ScanStructContext(ctx, &downloadTask)
 	if err != nil {
 		return DownloadTask{}, err

@@ -33,10 +33,10 @@ func (d downloadTaskCreated) Handle(ctx context.Context, event producer.Download
 	logger := utils.LoggerWithContext(ctx, d.logger).With(zap.Any("event", event))
 	logger.Info("download task created event received")
 
-	// if err := d.downloadTaskService.ExecuteDownloadTask(ctx, event.ID); err != nil {
-	// 	logger.With(zap.Error(err)).Error("failed to handle download task created event")
-	// 	return err
-	// }
+	if err := d.downloadTaskService.ExecuteDownloadTask(ctx, event.DownloadTaskID); err != nil {
+		logger.With(zap.Error(err)).Error("failed to handle download task created event")
+		return err
+	}
 
 	return nil
 }

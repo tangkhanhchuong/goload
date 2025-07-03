@@ -9,4 +9,5 @@ var WireSet = wire.NewSet(
 	NewHashService,
 	NewTokenService,
 	NewDownloadTaskService,
+	NewHttpDownloader,
 )

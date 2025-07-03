@@ -21,3 +21,11 @@ grpc:
   address: "0.0.0.0:8083"
 http:
   address: "0.0.0.0:8084"
+download:
+  mode: local
+  download_directory: "./"
+#   mode: s3
+#   bucket: downloaded-files
+#   address: "127.0.0.1:9000"
+#   username: "ROOTUSER"
+#   password: "CHANGEME123"
